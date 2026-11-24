@@ -27,15 +27,15 @@ ENDERS = (".", "!", "?")
 
 def _sentence_total(text):
     """Count sentence-ending marks followed by a gap or the end."""
-    total = 0
+    sentence_count = 0
     for pos, glyph in enumerate(text):
         if glyph in ENDERS and (pos + 1 == len(text) or text[pos + 1] == " "):
-            total += 1
-    return total
+            sentence_count += 1
+    return sentence_count
 
 
 def _story_ok(text):
-    """Check the story fits the competition's shape before writing."""
+    """Validate the story against the competition's shape before writing."""
     if not text.strip():
         return "story is empty"
     if "\n" in text or "\r" in text:
@@ -44,7 +44,7 @@ def _story_ok(text):
     if count < 1 or count > 2:
         return "story must be one or two sentences"
     if not 1 <= len(text) <= CEILING:
-        return "story must be 1-400 characters"
+        return f"story must be 1-{CEILING} characters"
     return None
 
 
@@ -52,9 +52,9 @@ def _save(text):
     """Write the story to the output file, creating the folder first."""
     import os
 
-    folder = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
-    folder.mkdir(parents=True, exist_ok=True)
-    (folder / "entry.txt").write_text(text, encoding="utf-8", newline="")
+    out_dir = Path(os.environ.get("MAKEFUN_OUTPUT_DIR", "/output"))
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "entry.txt").write_text(text, encoding="utf-8", newline="")
 
 
 def run():
